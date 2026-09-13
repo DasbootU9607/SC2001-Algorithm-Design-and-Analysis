@@ -1,6 +1,6 @@
 """Create the four report figures from measured CSV data.
 
-Usage (from the repository root): python scripts/plot_results.py --results results
+Usage (from the cpp directory): python scripts/plot_results.py --results results
 """
 
 import argparse

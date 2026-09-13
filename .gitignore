@@ -1,6 +1,14 @@
-build/
-__pycache__/
-.venv/
-.venv-linux/
-results/quick/
-results/local/
+# Local environments and notebook/editor caches.
+**/__pycache__/
+**/.ipynb_checkpoints/
+**/.venv/
+**/.venv-linux/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Keep local settings and generated Python runs out of commits.
+.env
+.env.*
+python/results/
