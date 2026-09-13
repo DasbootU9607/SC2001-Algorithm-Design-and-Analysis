@@ -1,14 +1,13 @@
 # SC2001 Project 1 Report
 
-## Integration of Merge Sort and Insertion Sort
+*Integration of Merge Sort and Insertion Sort*
 
-The hybrid algorithm was implemented and tested on random arrays containing up
-to **10 million integers**. In the final comparison, the selected threshold
-**S = 24** reduced median CPU time by **11.23%**, while increasing the mean number
-of key comparisons by **10.09%**. These are measured results for this implementation
-and machine, rather than a universal guarantee.
+This report answers the assignment in order: **A. Algorithm implementation**,
+**B. Generate input data**, **C. Analyze time complexity**, and **D. Compare with
+original Merge Sort**. Part C contains subquestions C(i), C(ii), and C(iii).
+The analysis uses 685 measured sorts on arrays containing up to 10 million integers.
 
-## (a) Algorithm implementation
+## A. Algorithm implementation
 
 [`src/sorting.cpp`](../src/sorting.cpp) contains the original merge sort and the hybrid algorithm. The
 hybrid follows this procedure:
@@ -34,7 +33,7 @@ insertion-sort comparison that terminates the inner loop. It excludes index
 checks, assignments, and copying remaining elements after one merge side is
 exhausted. Counts use `std::uint64_t`.
 
-## (b) Input generation and experiment setup
+## B. Generate input data
 
 The tested sizes were 1,000; 3,000; 10,000; 30,000; 100,000; 300,000;
 1,000,000; 3,000,000; and 10,000,000. Values were generated uniformly from
@@ -63,7 +62,7 @@ scratch allocation, correctness checks, and CSV writing are excluded. Wall time
 is recorded separately. The sorting routines are single-threaded. The largest
 experiment holds approximately four 40 MB integer arrays, about 160 MB in total.
 
-## (c) Time-complexity analysis
+## C. Analyze time complexity
 
 For a subarray larger than S, the recurrence is
 
@@ -92,7 +91,7 @@ sum. Merging runs of lengths a and b has expected count
 `a + b - a/(b+1) - b/(a+1)`. These formulas assume uniformly shuffled distinct
 keys; they are a reference model for our duplicate-containing inputs.
 
-### (i) Fixed S, varying n
+### C(i). Fixed S, varying n
 
 S was fixed at **16**. Selected measurements are shown below; all nine sizes are
 included in `results/input_sizes.csv`.
@@ -111,7 +110,7 @@ halving and need not equal S.
 
 ![Comparison growth at fixed S](../results/figures/c1_comparisons_vs_n.png)
 
-### (ii) Fixed n, varying S
+### C(ii). Fixed n, varying S
 
 n was fixed at **100,000**. S was tested at every integer from 1 through 64,
 followed by 96 and 128.
@@ -134,7 +133,7 @@ distinct-key expectation.
 
 ![Comparison count at fixed n](../results/figures/c2_comparisons_vs_s.png)
 
-### (iii) Selecting an optimal S
+### C(iii). Selecting an optimal S
 
 The candidate thresholds were **1, 2, 4, 8, 12, 16, 24, 32, 48, 64, 96, 128**.
 The smallest median CPU time determined the winner for each size.
@@ -160,7 +159,7 @@ CPU, compiler, input distribution, and actual leaf sizes can change the result.
 
 ![Threshold timing study](../results/figures/c3_threshold_cpu.png)
 
-## (d) Comparison with original merge sort
+## D. Compare with original Merge Sort
 
 Five **new seeds**, 520260914 through 520260918, were used for arrays of exactly
 10 million integers. Each trial compared both algorithms on identical input;

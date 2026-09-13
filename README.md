@@ -7,35 +7,97 @@ with reproducible experiments for every part of the assignment.
 The largest inputs contain **10,000,000 integers**. See the
 [full report](docs/REPORT.md) for the algorithm and complexity analysis.
 
-[Measured results](#measured-results) | [Run the project](#run-the-project) |
-[Repository structure](#repository-structure) | [Read the code](#read-the-code)
+[A. Algorithm](#a-algorithm-implementation) | [B. Input data](#b-generate-input-data) |
+[C. Complexity and experiments](#c-analyze-time-complexity) |
+[D. Merge-sort comparison](#d-compare-with-original-merge-sort) |
+[Run the project](#run-the-project)
 
-## Measured results
+The answers below follow the original assignment order: **A, B, C(i)-(iii), D**.
+
+## A. Algorithm implementation
+
+The hybrid algorithm uses **merge sort for large subarrays** and switches to
+**insertion sort when the subarray length is at most S**. Its implementation is
+in [`src/sorting.cpp`](src/sorting.cpp).
+
+```text
+hybrid_sort(array, begin, end, S):
+    if end - begin <= S:
+        insertion_sort(array[begin:end])
+        return
+    middle = begin + ceil((end - begin) / 2)
+    hybrid_sort(array, begin, middle, S)
+    hybrid_sort(array, middle, end, S)
+    merge the two sorted halves
+```
+
+The code uses half-open ranges **[begin, end)** and one reusable scratch array.
+During merging, the left key is selected on equality, preserving stability.
+The original merge sort uses the same merge step but recurses to single-element
+subarrays. Setting **S = 1** gives the hybrid the same comparison count as the
+original merge sort.
+
+A **key comparison** compares two input values. The counter includes the final
+insertion comparison that stops the inner loop, but excludes index checks,
+assignments, and copying the remaining keys after one merge side is exhausted.
+Both sorting functions return a 64-bit comparison count. Exact-count examples
+and correctness checks are in [`tests/sorting_tests.cpp`](tests/sorting_tests.cpp).
+
+## B. Generate input data
+
+The tested array sizes are **1,000; 3,000; 10,000; 30,000; 100,000; 300,000;
+1,000,000; 3,000,000; and 10,000,000**. For each size, values are drawn uniformly
+from **[1, x]**, with **x = 10,000,000**. Duplicate values are allowed.
+
+`generate_input` in [`src/experiments.cpp`](src/experiments.cpp) uses this logic:
+
+```cpp
+std::mt19937 generator(seed);
+std::uniform_int_distribution<int> distribution(1, 10'000'000);
+std::vector<int> values(n);
+for (int& value : values) {
+    value = distribution(generator);
+}
+```
+
+Arrays are generated in memory as needed. The seed for every measured run is
+stored in [raw_measurements.csv](results/raw_measurements.csv), so inputs can be
+recreated without storing large array files. Each setting uses five seeded
+inputs, and all algorithms or thresholds within a trial receive the same input.
+
+### Experiment setup
 
 Recorded on **13 September 2026** using an **Intel Core i5-13420H**, Ubuntu 24.04
 under WSL2, and **GCC 13.3.0 with `-O2`**. Each setting used five seeded inputs.
 Comparison counts below are arithmetic means; CPU times are medians.
 
-### (d) Original merge sort vs. hybrid: 10 million integers
+- Random integers are uniform in **[1, 10,000,000]**, including duplicates.
+- Each trial has a recorded seed. Every candidate receives the same input within
+  a trial. The final comparison uses seeds separate from tuning.
+- Timing includes sorting and comparison counting. Input generation, copying,
+  scratch allocation, validation, and file writing are outside timing.
+- CPU time and elapsed wall time are recorded separately. Every sorted output
+  is checked against `std::sort` outside the timed region.
+- These results describe one machine and five trials per setting. Timing ranges
+  show observed variation, not confidence intervals.
 
-The tuning experiment selected **S = 24**. The final comparison used five new
-inputs, with the same input given to both algorithms within each trial.
+The [raw CSV](results/raw_measurements.csv), [run metadata](results/metadata.txt),
+and [environment record](results/environment.txt) are included. Seeded input is
+reproducible with the same C++ standard-library implementation.
 
-| Algorithm | Mean key comparisons | Median CPU time | Observed CPU range |
-|---|---:|---:|---:|
-| Original merge sort | 220,101,381.6 | 1.292713 s | 1.223015-1.423818 s |
-| Hybrid merge sort, S = 24 | 242,314,340.8 | 1.147524 s | 1.077629-1.243052 s |
+## C. Analyze time complexity
 
-The hybrid took **11.23% less CPU time** while making **10.09% more key
-comparisons**. It was faster in four of the five paired trials. Saving recursive
-calls and small merges can outweigh the extra comparisons made by insertion sort.
+For a subarray larger than S, recursive sorting is followed by a linear merge.
+Insertion-sort leaves take quadratic time on random distinct keys on average
+and in the worst case. For **1 <= S <= n**, this gives
+**Theta(nS + n log2(n/S))**; with fixed S, the hybrid is **Theta(n log n)**.
+The [report](docs/REPORT.md#c-analyze-time-complexity) derives the recurrence and
+the distinct-key expectation curves used below.
 
-![Measured comparison of original merge sort and hybrid sort](results/figures/d_merge_comparison.png)
+The following three experiments answer C(i), C(ii), and C(iii), respectively.
+All tables and figures are based on the included measured data.
 
-Sources: [comparison summary](results/merge_comparison.csv) and
-[all raw measurements](results/raw_measurements.csv).
-
-### (c)(i) Fixed S = 16, increasing input size
+### C(i). Fixed S = 16, increasing input size
 
 | Input size n | Mean key comparisons | Median CPU time |
 |---:|---:|---:|
@@ -57,7 +119,7 @@ times; compare tuning candidates within the tuning experiment below.
 
 Source: [input-size experiment](results/input_sizes.csv).
 
-### (c)(ii) Fixed n = 100,000, varying S
+### C(ii). Fixed n = 100,000, varying S
 
 The experiment tested **S = 1 through 64, plus 96 and 128**. Selected rows:
 
@@ -78,7 +140,7 @@ expected-count model for distinct random keys; the dots are measured results.
 
 Source: [all 66 threshold settings](results/threshold_sweep.csv).
 
-### (c)(iii) Selecting the threshold by CPU time
+### C(iii). Selecting the threshold by CPU time
 
 Candidates: **1, 2, 4, 8, 12, 16, 24, 32, 48, 64, 96, 128**.
 
@@ -100,21 +162,25 @@ is noise. S = 48 was also close at 1.094072 s, with overlapping timing ranges.
 Sources: [tuning measurements](results/threshold_tuning.csv) and
 [selected thresholds](results/best_threshold.csv).
 
-### Measurement method
+## D. Compare with original Merge Sort
 
-- Random integers are uniform in **[1, 10,000,000]**, including duplicates.
-- Each trial has a recorded seed. Every candidate receives the same input within
-  a trial. The final comparison uses seeds separate from tuning.
-- Timing includes sorting and comparison counting. Input generation, copying,
-  scratch allocation, validation, and file writing are outside timing.
-- CPU time and elapsed wall time are recorded separately. Every sorted output
-  is checked against `std::sort` outside the timed region.
-- These results describe one machine and five trials per setting. Timing ranges
-  show observed variation, not confidence intervals.
+Both algorithms were compared on arrays of **10,000,000 integers**.
+The tuning experiment selected **S = 24**. The final comparison used five new
+inputs, with the same input given to both algorithms within each trial.
 
-The [raw CSV](results/raw_measurements.csv), [run metadata](results/metadata.txt),
-and [environment record](results/environment.txt) are included. Seeded input is
-reproducible with the same C++ standard-library implementation.
+| Algorithm | Mean key comparisons | Median CPU time | Observed CPU range |
+|---|---:|---:|---:|
+| Original merge sort | 220,101,381.6 | 1.292713 s | 1.223015-1.423818 s |
+| Hybrid merge sort, S = 24 | 242,314,340.8 | 1.147524 s | 1.077629-1.243052 s |
+
+The hybrid took **11.23% less CPU time** while making **10.09% more key
+comparisons**. It was faster in four of the five paired trials. Saving recursive
+calls and small merges can outweigh the extra comparisons made by insertion sort.
+
+![Measured comparison of original merge sort and hybrid sort](results/figures/d_merge_comparison.png)
+
+Sources: [comparison summary](results/merge_comparison.csv) and
+[all raw measurements](results/raw_measurements.csv).
 
 ## Run the project
 
