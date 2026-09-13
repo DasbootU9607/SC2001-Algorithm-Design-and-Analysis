@@ -1,0 +1,21 @@
+Recorded run date: 2026-09-13
+Host CPU: Intel(R) Core(TM) i5-13420H
+Architecture: x86_64
+Runtime: Ubuntu 24.04 under Windows Subsystem for Linux 2
+Kernel: 6.18.33.2-microsoft-standard-WSL2
+Compiler: g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+C++ standard library: GNU libstdc++ bundled with GCC 13.3.0
+Build command: g++ -std=c++17 -O2 -Wall -Wextra -Wpedantic sorting.cpp main.cpp -o build/project1
+Run command: ./build/project1 --output results
+Plotting: Python 3.12.14, Matplotlib 3.11.2 (Windows)
+CPU clock: std::clock; CLOCKS_PER_SEC=1000000
+Sorting threads: 1
+Comparison counter: enabled during all sorting measurements
+Full measured sorts: 685
+Repetitions per setting: 5
+Random distribution: uniform integers, inclusive range [1,10000000]
+Input reproducibility: seeds in raw_measurements.csv; same standard-library implementation required
+CPU times are process CPU time, not elapsed wall time. WSL accounting and
+scheduling can cause small differences between the two recorded clocks.
+Existing system processes were not controlled; observed timing ranges are
+reported, and differences between closely ranked thresholds are not conclusive.
