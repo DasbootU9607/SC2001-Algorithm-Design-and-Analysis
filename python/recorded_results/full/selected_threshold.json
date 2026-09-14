@@ -1,0 +1,20 @@
+{
+  "mode": "full",
+  "selection_n": 10000000,
+  "candidate_thresholds": [
+    1,
+    2,
+    4,
+    8,
+    12,
+    16,
+    24,
+    32,
+    48,
+    64,
+    96,
+    128
+  ],
+  "selected_threshold": 32,
+  "criterion": "minimum median CPU time; exact ties use smaller S"
+}
