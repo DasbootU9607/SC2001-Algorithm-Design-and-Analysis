@@ -184,7 +184,7 @@ Sources: [comparison summary](results/merge_comparison.csv) and
 
 ## Run the project
 
-Run commands from the `cpp/` directory (`cd cpp` from the repository root).
+Run commands from the `Project 1/cpp/` directory (`cd "Project 1/cpp"` from the repository root).
 The verified environment is
 **Linux / Ubuntu WSL with GCC and Make**. Python is only needed to check CSVs
 and generate plots.
