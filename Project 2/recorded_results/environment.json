@@ -1,0 +1,119 @@
+{
+  "python": "3.13.7",
+  "platform": "Windows",
+  "pandas": "2.3.2",
+  "matplotlib": "3.10.7",
+  "timer": "perf_counter_ns (elapsed wall time)",
+  "timer_resolution_seconds": 1e-07,
+  "vertex_counts": [
+    100,
+    200,
+    400,
+    800
+  ],
+  "edge_sweep_vertices": 400,
+  "densities": [
+    0.01,
+    0.05,
+    0.1,
+    0.25,
+    0.5,
+    1.0
+  ],
+  "graph_seeds": [
+    2001,
+    2002,
+    2003,
+    2004,
+    2005
+  ],
+  "source": 0,
+  "repeats": 3,
+  "warmups": 1,
+  "weight_range_inclusive": [
+    1,
+    100
+  ],
+  "case_order_seed": 20261005,
+  "generator": "random outward tree + shuffled remaining directed edges; nested by E",
+  "settings": [
+    {
+      "experiment": "sparse_scaling",
+      "V": 100,
+      "E": 400
+    },
+    {
+      "experiment": "dense_scaling",
+      "V": 100,
+      "E": 2475
+    },
+    {
+      "experiment": "sparse_scaling",
+      "V": 200,
+      "E": 800
+    },
+    {
+      "experiment": "dense_scaling",
+      "V": 200,
+      "E": 9950
+    },
+    {
+      "experiment": "sparse_scaling",
+      "V": 400,
+      "E": 1600
+    },
+    {
+      "experiment": "dense_scaling",
+      "V": 400,
+      "E": 39900
+    },
+    {
+      "experiment": "sparse_scaling",
+      "V": 800,
+      "E": 3200
+    },
+    {
+      "experiment": "dense_scaling",
+      "V": 800,
+      "E": 159800
+    },
+    {
+      "experiment": "edge_sweep",
+      "V": 400,
+      "E": 1596
+    },
+    {
+      "experiment": "edge_sweep",
+      "V": 400,
+      "E": 7980
+    },
+    {
+      "experiment": "edge_sweep",
+      "V": 400,
+      "E": 15960
+    },
+    {
+      "experiment": "edge_sweep",
+      "V": 400,
+      "E": 39900
+    },
+    {
+      "experiment": "edge_sweep",
+      "V": 400,
+      "E": 79800
+    },
+    {
+      "experiment": "edge_sweep",
+      "V": 400,
+      "E": 159600
+    }
+  ],
+  "correctness_graph_source_checks": 715,
+  "timed_calls": 420,
+  "graph_cases": 70,
+  "benchmark_loop_seconds": 12.566459,
+  "summary": "median of five per-graph medians; each graph has three measured repeats",
+  "error_bars": "min/max across five per-graph medians, not confidence intervals",
+  "speedup": "median of five paired matrix/heap ratios",
+  "limitations": "one machine; normal GC; warm runs; V<=800; tree-augmented positive-weight graphs"
+}

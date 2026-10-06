@@ -1,0 +1,7 @@
+# Versions used for the recorded experiment's analysis and figures.
+matplotlib==3.10.7
+pandas==2.3.2
+
+# Notebook interface and Python kernel.
+jupyterlab
+ipykernel

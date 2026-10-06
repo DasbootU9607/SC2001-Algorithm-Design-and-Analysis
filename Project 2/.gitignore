@@ -1,0 +1,9 @@
+# Fresh benchmark runs; the reference run is explicitly tracked.
+/results/
+
+# Notebook checkpoints, caches, local environments and credentials.
+.ipynb_checkpoints/
+__pycache__/
+.venv/
+.env
+.env.*
